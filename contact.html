@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ilmoittautuminen</title>
-</head>
+    <link rel="stylesheet" href="styles.css">
 
+</head>
 <body>
+  <header>
     <h1>Ilmoittautuminen</h1>
+    <nav>
+        <ul>
+            <li><a href="index.html">Etusivu</a></li>
+            <li><a href="contact.html">Ilmoittautuminen</a></li>
+            <li><a href="about.html">Tietoa meistä</a></li>
+            <li><a href="listing.html">Tulevat pelit</a></li>
+
+    </nav>
+  </header>
     <form id="ilmoittautuminen" novalidate>
     <div class="kentta">
     <label for="etunimi">Etunimi:</label>
@@ -38,12 +49,14 @@
     <option value="juniorit">Juniorit</option>
   </select>
 </div>
-
+<footer>
+  <p>&copy; 2023 Lapuan Lepakot. Kaikki oikeudet pidätetään.</p>
+</footer>
     <button type="submit">Lähetä</button>
-    <p id="virhe" role="alert" style="color: red;"></p>
+    <p id="virhe" role="alert" class="virhe">color: red;"></p>
 </form>
 
-<p id="onnistuminen" role="status" style="color: green;"></p>
+<p id="onnistuminen" role="status" class="onnistuminen">color: green;"></p>
 
 <script>
   const lomake = document.getElementById("ilmoittautuminen");

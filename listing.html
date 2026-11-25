@@ -4,17 +4,45 @@
   <meta charset="UTF-8">
   <title>Joukkueen ottelut ja harjoitukset</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+      
+    
 
 </head>
+  <style>
+#popover-sisalto {
+  display: none;
+}
+
+#popover-sisalto.näytä {
+  display: block;
+  position: absolute;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 200px;
+  z-index: 1;
+}
+</style>
 <body>
   <header>
     <h1>Tärkeimmät tiedot</h1>
+    <label for="haku">Hae otteluista ja tiedoista:</label>
+    <input id="haku" type="search" placeholder="Kirjoita hakusana">
+    <p id="hakutulos" role="status" aria-live="polite"></p>
+
     <nav>
         <ul>
             <li><a href="index.html">Etusivu</a></li>
             <li><a href="contact.html">Ilmoittautuminen</a></li>
             <li><a href="about.html">Tietoa meistä</a></li>
             <li><a href="listing.html">Tulevat pelit</a></li>
+        </ul>
+        <button id="popover-painike" type="button">Pikalinkit</button>
+
+        <div id="popover-sisalto" popover>
+        <a href="listing.html">Tulevat pelit</a>
+        <a href="contact.html">Ilmoittaudu</a>
 
     </nav>
   </header>
@@ -37,6 +65,11 @@
   <footer>
     <p>&copy; 2023 Lapuan Lepakot. Kaikki oikeudet pidätetään.</p>
 </footer>
+<script>
+  document.getElementById("popover-painike").addEventListener("click", function() {
+    document.getElementById("popover-sisalto").classList.toggle("näytä");
+  });
+</script>
 </body>
 </html>
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae officiis similique omnis suscipit sit rerum, impedit natus excepturi modi harum atque rem quia? Vel voluptate, soluta placeat accusantium quo ex.

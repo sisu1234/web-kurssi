@@ -1,40 +1,37 @@
 const haku = document.querySelector("#haku");
 const hakutulos = document.querySelector("#hakutulos");
-const listanSisalto = document.querySelector("main dl");
+const ottelut = [...document.querySelectorAll("#ottelulista .ottelu")];
 
-if (haku && hakutulos && listanSisalto) {
-  const kohdat = [...listanSisalto.querySelectorAll("dt, dd")];
-
+if (haku && hakutulos && ottelut.length) {
   function suodataLista() {
     const hakusana = haku.value.trim().toLocaleLowerCase("fi");
     let osumia = 0;
 
-    for (let i = 0; i < kohdat.length; i++) {
-      const kohta = kohdat[i];
-      const loytyy = kohta.textContent.toLocaleLowerCase("fi").includes(hakusana);
+    ottelut.forEach((ottelu) => {
+      const loytyy = ottelu.textContent
+        .toLocaleLowerCase("fi")
+        .includes(hakusana);
 
-      kohta.hidden = !loytyy;
-
-      if (loytyy) {
-        osumia++;
-      }
-    }
+      ottelu.hidden = !loytyy;
+      if (loytyy) osumia++;
+    });
 
     hakutulos.textContent = hakusana
       ? `Näytetään ${osumia} hakutulosta.`
-      : `Näytetään kaikki ${kohdat.length} kohtaa.`;
+      : `Näytetään kaikki ${osumia} kohtaa.`;
   }
 
   haku.addEventListener("input", suodataLista);
   suodataLista();
 }
 
-
 const lomake = document.querySelector("#ilmoittautuminen");
 
 if (lomake) {
   const kentat = [...lomake.querySelectorAll("input[required], select[required]")];
   const onnistuminen = document.querySelector("#onnistuminen");
+  const virheYhteenveto = document.querySelector("#virhe");
+  const tallennusavain = "lapuanLepakotIlmoittautuminen";
 
   kentat.forEach((kentta) => {
     const virheId = `${kentta.id}-virhe`;
@@ -57,9 +54,9 @@ if (lomake) {
     if (kentta.validity.valueMissing) {
       virheTeksti.textContent = "Tämä kenttä on pakollinen.";
     } else if (kentta.validity.typeMismatch) {
-      virheTeksti.textContent = "Tarkista, että tieto on oikeassa muodossa.";
+      virheTeksti.textContent = "Anna kelvollinen sähköpostiosoite.";
     } else {
-      virheTeksti.textContent = kentta.validationMessage;
+      virheTeksti.textContent = kentta.validationMessage || "Tarkista kentän tieto.";
     }
 
     virheTeksti.hidden = false;
@@ -68,92 +65,72 @@ if (lomake) {
 
   function poistaVirhe(kentta) {
     const virheTeksti = document.getElementById(`${kentta.id}-virhe`);
-
     virheTeksti.textContent = "";
     virheTeksti.hidden = true;
     kentta.removeAttribute("aria-invalid");
   }
 
   try {
-    const tallennetutTiedot = JSON.parse(
-      localStorage.getItem("lapuanLepakotIlmoittautuminen") || "{}"
-    );
-
+    const tallennetut = JSON.parse(localStorage.getItem(tallennusavain) || "{}");
     kentat.forEach((kentta) => {
-      if (tallennetutTiedot[kentta.name]) {
-        kentta.value = tallennetutTiedot[kentta.name];
+      if (typeof tallennetut[kentta.name] === "string") {
+        kentta.value = tallennetut[kentta.name];
       }
     });
   } catch {
+    // Tallennus ei ole käytettävissä; lomaketta voi silti käyttää.
+  }
 
-}
+  function tallennaTiedot() {
+    const tiedot = Object.fromEntries(
+      kentat.map((kentta) => [kentta.name, kentta.value])
+    );
+
+    try {
+      localStorage.setItem(tallennusavain, JSON.stringify(tiedot));
+    } catch {
+      // Tallennus ei ole käytettävissä; lomaketta voi silti käyttää.
+    }
+  }
 
   kentat.forEach((kentta) => {
     kentta.addEventListener("input", () => {
-      if (kentta.validity.valid) {
-        poistaVirhe(kentta);
-      }
-
-      const tiedot = Object.fromEntries(
-        kentat.map((elementti) => [elementti.name, elementti.value])
-      );
-
-      try {
-        localStorage.setItem(
-          "lapuanLepakotIlmoittautuminen",
-          JSON.stringify(tiedot)
-        );
-      } catch {
-
-      }
+      if (kentta.validity.valid) poistaVirhe(kentta);
+      tallennaTiedot();
     });
 
     kentta.addEventListener("change", () => {
-      if (kentta.validity.valid) {
-        poistaVirhe(kentta);
-      }
+      if (kentta.validity.valid) poistaVirhe(kentta);
+      tallennaTiedot();
     });
   });
 
   lomake.addEventListener("submit", (tapahtuma) => {
     tapahtuma.preventDefault();
+    onnistuminen.textContent = "";
+    virheYhteenveto.textContent = "";
 
-    if (onnistuminen) {
-      onnistuminen.textContent = "";
-    }
+    let ensimmainenVirheellinen = null;
 
-    const virheellinenKentta = kentat.find((kentta) => !kentta.validity.valid);
+    kentat.forEach((kentta) => {
+      if (!kentta.validity.valid) {
+        naytaVirhe(kentta);
+        ensimmainenVirheellinen ||= kentta;
+      } else {
+        poistaVirhe(kentta);
+      }
+    });
 
-    if (virheellinenKentta) {
-      kentat.forEach((kentta) => {
-        if (!kentta.validity.valid) {
-          naytaVirhe(kentta);
-        } else {
-          poistaVirhe(kentta);
-        }
-      });
-
-      virheellinenKentta.focus();
+    if (ensimmainenVirheellinen) {
+      virheYhteenveto.textContent = "Tarkista lomakkeen virheelliset kentät.";
+      ensimmainenVirheellinen.focus();
       return;
     }
 
-    kentat.forEach(poistaVirhe);
-
-    if (onnistuminen) {
-      onnistuminen.textContent = "Pyyntö on valmis.";
-    }
-
-    lomake.reset();
-
-    try {
-      localStorage.removeItem("lapuanLepakotIlmoittautuminen");
-    } catch {
-      // Ei tehdä mitään, jos localStorage ei ole käytettävissä.
-    }
+    onnistuminen.textContent =
+      "Tiedot on tarkistettu, mutta niitä ei lähetetty. Ota yhteyttä joukkueeseen erikseen.";
   });
 }
-
-
 
 const popoverPainike = document.querySelector("#popover-painike");
 const popoverSisalto = document.querySelector("#popover-sisalto");
@@ -167,9 +144,7 @@ if (popoverPainike && popoverSisalto) {
     popoverSisalto.hidden = true;
     popoverPainike.setAttribute("aria-expanded", "false");
 
-    if (palautaFokus) {
-      popoverPainike.focus();
-    }
+    if (palautaFokus) popoverPainike.focus();
   }
 
   popoverPainike.addEventListener("click", () => {
@@ -183,9 +158,7 @@ if (popoverPainike && popoverSisalto) {
   });
 
   popoverSisalto.addEventListener("keydown", (tapahtuma) => {
-    if (tapahtuma.key === "Escape") {
-      suljePopover(true);
-    }
+    if (tapahtuma.key === "Escape") suljePopover(true);
   });
 
   document.addEventListener("click", (tapahtuma) => {

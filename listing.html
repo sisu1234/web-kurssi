@@ -2,74 +2,65 @@
 <html lang="fi">
 <head>
   <meta charset="UTF-8">
-  <title>Joukkueen ottelut ja harjoitukset</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tulevat pelit – Lapuan Lepakot</title>
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
-      
-    
-
 </head>
-  <style>
-#popover-sisalto {
-  display: none;
-}
-
-#popover-sisalto.näytä {
-  display: block;
-  position: absolute;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 200px;
-  z-index: 1;
-}
-</style>
 <body>
   <header>
-    <h1>Tärkeimmät tiedot</h1>
+    <h1>Lapuan Lepakot</h1>
+    <nav aria-label="Päänavigaatio">
+      <ul>
+        <li><a href="index.html">Etusivu</a></li>
+        <li><a href="contact.html">Ilmoittautuminen</a></li>
+        <li><a href="about.html">Tietoa meistä</a></li>
+        <li><a href="listing.html">Tulevat pelit</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Tulevat pelit ja joukkueen tiedot</h2>
+
     <label for="haku">Hae otteluista ja tiedoista:</label>
     <input id="haku" type="search" placeholder="Kirjoita hakusana">
     <p id="hakutulos" role="status" aria-live="polite"></p>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Etusivu</a></li>
-            <li><a href="contact.html">Ilmoittautuminen</a></li>
-            <li><a href="about.html">Tietoa meistä</a></li>
-            <li><a href="listing.html">Tulevat pelit</a></li>
-        </ul>
-        <button id="popover-painike" type="button">Pikalinkit</button>
+    <button id="popover-painike" type="button"
+            aria-expanded="false" aria-controls="popover-sisalto">
+      Pikalinkit
+    </button>
+    <div id="popover-sisalto" hidden>
+      <a href="listing.html">Tulevat pelit</a>
+      <a href="contact.html">Ilmoittaudu</a>
+    </div>
 
-        <div id="popover-sisalto" popover>
-        <a href="listing.html">Tulevat pelit</a>
-        <a href="contact.html">Ilmoittaudu</a>
+    <section id="ottelulista" aria-label="Joukkueen tiedot ja ottelut">
+      <article class="ottelu">
+        <h3>Harjoitukset</h3>
+        <p>Tiistaisin klo 18.00–20.00, Lapuan liikuntahalli</p>
+      </article>
 
-    </nav>
-  </header>
-  <main>
-    <article>
-      <header>
-        <dl>
-          <dt>Harjoitukset</dt>
-          <dd>Tiistaisin klo 18:00-20:00, Lapuan liikuntahalli</dd>
-          <dt>Tulevat ottelut</dt>
-          <dd>- Lapuan Lepakot vs Seinäjoen Salamanterit 14.11.2026</dd>
-          <dt>Menneet ottelut</dt>
-          <dd>- Lapuan Lepakot vs Kauhajoen Konit 5-1</dd>
-          <dt>Miten pääsee mukaan?</dt>
-          <dd><a href="contact.html">Tästä linkistä</a></dd>
-        </dl>
-      </header>
-    </article>
+      <article class="ottelu">
+        <h3>Tuleva ottelu</h3>
+        <p>Lapuan Lepakot vs. Seinäjoen Salamanterit, 14.11.2026</p>
+      </article>
+
+      <article class="ottelu">
+        <h3>Mennyt ottelu</h3>
+        <p>Lapuan Lepakot vs. Kauhajoen Konit, tulos 5–1</p>
+      </article>
+
+      <article class="ottelu">
+        <h3>Miten pääsee mukaan?</h3>
+        <p><a href="contact.html">Ilmoittaudu tästä</a></p>
+      </article>
+    </section>
   </main>
+
   <footer>
     <p>&copy; 2023 Lapuan Lepakot. Kaikki oikeudet pidätetään.</p>
-</footer>
-<script>
-  document.getElementById("popover-painike").addEventListener("click", function() {
-    document.getElementById("popover-sisalto").classList.toggle("näytä");
-  });
-</script>
+  </footer>
 </body>
 </html>
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae officiis similique omnis suscipit sit rerum, impedit natus excepturi modi harum atque rem quia? Vel voluptate, soluta placeat accusantium quo ex.

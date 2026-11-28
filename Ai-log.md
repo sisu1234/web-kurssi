@@ -3,6 +3,6 @@ Mitä kysyttiin tekoälyltä
 ```
 
 ```
-- Miten tehdään tiettyjä komentoja
+- Miten tehdään tiettyjä komentoja ja miten ne toimivat
 ```
 
